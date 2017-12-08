@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab5NameBinarySearchTree", "Lab5NameBinarySearchTree.vcxproj", "{886D0FD3-3D8D-4B77-8045-50655E8BA9B1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab6HashTable", "Lab6HashTable.vcxproj", "{886D0FD3-3D8D-4B77-8045-50655E8BA9B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {EAA8B820-4833-4027-8824-3E9A39D96895}
+		SolutionGuid = {AC2B6467-C7BE-494F-BD5A-F94070BAE6BC}
 	EndGlobalSection
 EndGlobal

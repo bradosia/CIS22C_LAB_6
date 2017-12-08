@@ -114,16 +114,20 @@
     <ClCompile Include="CommandLineUI.cpp" />
     <ClCompile Include="FileIO.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="NodeMain.cpp" />
+    <ClCompile Include="StringHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BST.h" />
-    <ClInclude Include="BSTNode.h" />
     <ClInclude Include="CommandLineUI.h" />
     <ClInclude Include="FileIO.h" />
+    <ClInclude Include="HashMap.h" />
+    <ClInclude Include="HashMapNode.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="ListNode.h" />
+    <ClInclude Include="MathHelper.h" />
     <ClInclude Include="NodeMain.h" />
+    <ClInclude Include="StringHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
