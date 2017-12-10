@@ -32,7 +32,6 @@ private:
 public:
 	// CONSTRUCTORS/DESTRUCTORS
 	List ();
-	List (unsigned int size);
 	virtual ~List ();
 
 	/** Sees whether this list is empty.
@@ -65,14 +64,14 @@ public:
 	/** get the value of the element from front of the list
 	@pre None
 	@post None
-	@return The front value
+	@return The front value 
 	*/
 	T front ();
 
 	/** get the value of the element from back of the list
 	@pre None
 	@post None
-	@return The back value
+	@return The back value 
 	*/
 	T back ();
 
@@ -80,7 +79,7 @@ public:
 	@pre None
 	@post the entry is added to the back position in the list
 	and the returned value is true.
-	@return True if push is successful, or false if not.
+	@return True if push is successful, or false if not. 
 	*/
 	bool push_back (T newEntry);
 
@@ -88,7 +87,7 @@ public:
 	@pre None
 	@post the entry is added to the front position in the list
 	and the returned value is true.
-	@return True if push is successful, or false if not.
+	@return True if push is successful, or false if not. 
 	*/
 	bool push_front (T newEntry);
 
@@ -129,8 +128,7 @@ public:
 	@post None
 	@param val The value of the entry to find.
 	@return True if list contains val, or false otherwise. */
-	bool find (T val);
-	bool find (T val, unsigned int &operations);
+	bool find (T anEntry);
 
 	/** Gets the entry at the given position in this list.
 	@pre 0 <= position < size().
@@ -177,13 +175,6 @@ List<T>::List () // Default Constructor
 }
 
 template <class T>
-List<T>::List (unsigned int size)
-{
-	for (unsigned int i = 0; i < size; i++)
-		push_back (T ());
-}
-
-template <class T>
 List<T>::~List () { clear (); } // Destructor 
 
 //******************************************************
@@ -206,19 +197,20 @@ template <class T>
 void List<T>::clear ()
 {
 	ListNode<T> *currentNode;
+	ListNode<T> *deletedNode;
 	ListNode<T> *nextNode;
+
 	if (!empty ())
 	{
 		currentNode = tail;
-		while (currentNode)
+		while (currentNode != nullptr)
 		{
-			nextNode = currentNode->getNext ();
-			delete currentNode;
+			nextNode = currentNode->getNext();
+			deletedNode = currentNode;
 			currentNode = nextNode;
+			delete deletedNode;
 		}
 	}
-	head = nullptr;
-	tail = nullptr;
 	itemCount = 0;
 }
 
@@ -247,14 +239,14 @@ bool List<T>::insert (unsigned int position, T val)
 				returnStatus = true;
 				if (i != 0) prevNode->setNext (newNode);
 				else tail = newNode;
-				if (i != itemCount) newNode->setNext (currentNode);
+				if (i != itemCount) newNode->setNext(currentNode);
 				else head = newNode;
 				itemCount++;
 			}
 			else
 			{
 				prevNode = currentNode;
-				currentNode = currentNode->getNext ();
+				currentNode = currentNode->getNext();
 			}
 		}
 	}
@@ -262,15 +254,15 @@ bool List<T>::insert (unsigned int position, T val)
 }
 
 template <class T>
-T List<T>::front ()
-{
-	return getValue (0);
+T List<T>::front () 
+{ 
+	return getValue (0); 
 }
 
 template <class T>
-T List<T>::back ()
-{
-	return getValue (size () - 1);
+T List<T>::back () 
+{ 
+	return getValue (size () - 1); 
 }
 
 template <class T>
@@ -321,18 +313,18 @@ bool List<T>::erase (unsigned int position)
 			if (i == position)
 			{
 				deletedNode = currentNode;
-				if (i != 0 && i != itemCount) prevNode->setNext (currentNode->getNext ());
+				if (i != 0 && i != itemCount) prevNode->getNext() = currentNode->getNext();
 				if (i == 0 && i == itemCount) { head = nullptr; tail = nullptr; };
-				if (i == 0 && i != itemCount) tail = currentNode->getNext ();
-				if (i != 0 && i == itemCount) head = prevNode->getNext ();
-				currentNode->setNext (nullptr);
+				if (i == 0 && i != itemCount) tail = currentNode->getNext();
+				if (i != 0 && i == itemCount) head = prevNode->getNext();
+				currentNode->getNext() = nullptr;
 				delete currentNode;
 				itemCount--;
 			}
 			else
 			{
 				prevNode = currentNode;
-				currentNode = currentNode->getNext ();
+				currentNode = currentNode->getNext();
 			}
 		}
 	}
@@ -349,32 +341,32 @@ bool List<T>::remove (T val)
 	prevNode = currentNode;
 	bool returnStatus = true;
 
-	if (currentNode->getValue () == val)
+	if (currentNode->getValue() == val)
 	{
-		currentNode = currentNode->getNext ();
+		currentNode = currentNode->getNext();
 		delete tail;
 		tail = currentNode;
 	}
 	else
 	{
 
-		while (currentNode != nullptr && currentNode->getValue () != val)
+		while (currentNode != nullptr && currentNode->getValue() != val)
 		{
 			prevNode = currentNode;
-			currentNode = currentNode->getNext ();
+			currentNode = currentNode->getNext();
 		}
 
-		if (currentNode->getValue () == val && head->getValue () == val)
+		if (currentNode->getValue() == val && head->getValue() == val)
 		{
-			prevNode->getNext () = currentNode->getNext ();
+			prevNode->getNext() = currentNode->getNext();
 			//delete currentNode;
 			//delete head;
 			head = prevNode;
 
 		}
-		else if (currentNode->getValue () == val)
+		else if (currentNode->getValue() == val)
 		{
-			prevNode->getNext () = currentNode->getNext ();
+			prevNode->getNext() = currentNode->getNext();
 			delete currentNode;
 		}
 	}
@@ -388,21 +380,12 @@ bool List<T>::remove (T val)
 template <class T>
 bool List<T>::find (T val)
 {
-	int operations = 0;
-	return find (val, operations);
-}
-
-template <class T>
-bool List<T>::find (T val, unsigned int &operations)
-{
 	ListNode<T> *currentNode;
 	currentNode = tail;
-	operations += 3;
 	while (currentNode)
 	{
-		operations++;
-		if (currentNode->getValue () == val) return true;
-		else currentNode = currentNode->getNext ();
+		if (currentNode->getValue() == val) return true;
+		else currentNode = currentNode->getNext();
 	}
 	return false;
 }
@@ -419,11 +402,11 @@ T List<T>::getValue (unsigned int position)
 	{
 		for (i = 0; i <= position; i++)
 		{
-			if (i == position) { return currentNode->getValue (); }
-			else currentNode = currentNode->getNext ();
+			if (i == position) { return currentNode->getValue(); }
+			else currentNode = currentNode->getNext();
 		}
 	}
-	throw std::runtime_error ("Position " + std::to_string (position) + " does not exist!");
+	throw "not found";
 }
 
 template <class T>
@@ -443,12 +426,12 @@ template <class T>
 void List<T>::reverse (List<T> *target)
 {
 	unsigned int n = target->size ();
-	for (unsigned int i = n; i > 0; i--) push_back (target->getValue (i - 1));
+	for (unsigned int i = n; i > 0; i--) push_back (target->getValue (i-1));
 }
 
 template <class T>
 T List<T>::operator[] (const int index)
 {
-	return getValue (index);
+	return getValue(index);
 }
 #endif

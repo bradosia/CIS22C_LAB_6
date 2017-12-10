@@ -1,8 +1,4 @@
 /*
-<<<<<<< HEAD
-=======
-/*
->>>>>>> fcaaae96aa44a45df022c62072db1dbe38d3cfea
 Branden Lee
 CIS 22C
 Fall 2017

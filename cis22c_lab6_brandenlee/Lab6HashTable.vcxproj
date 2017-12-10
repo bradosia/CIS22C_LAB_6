@@ -122,10 +122,7 @@
     <ClInclude Include="CommandLineUI.h" />
     <ClInclude Include="FileIO.h" />
     <ClInclude Include="HashMap.h" />
-<<<<<<< HEAD
     <ClInclude Include="HashMapIterator.h" />
-=======
->>>>>>> fcaaae96aa44a45df022c62072db1dbe38d3cfea
     <ClInclude Include="HashMapNode.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="ListNode.h" />
