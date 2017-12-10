@@ -1,12 +1,12 @@
 /*
-Branden Lee, Anh Truong, Alexander Morfin, and Michael Wu
+Branden Lee
 CIS 22C
 Fall 2017
-Final Project
+Lab 6
 
 Used Microsoft Visual Studio 2017
 Windows SDK Version: 10.0.16299.0
-Use SDK Version: 10.0.15063.0 for De Anza Computerss
+Use SDK Version: 10.0.15063.0 for De Anza Computers
 USE DOXYGEN COMPLIANT DOCUMENTATION
 */
 #ifndef HASH_MAP_NODE_H
@@ -31,6 +31,7 @@ public:
 	// CONSTRUCTORS/DESTRUCTORS
 	HashMapNode ();
 	HashMapNode (std::string keyInit, T val);
+	HashMapNode(std::string keyInit, T val, unsigned int id);
 	HashMapNode(std::string keyInit, T val, unsigned int id, unsigned int pos);
 	~HashMapNode ();
 	// GETTER/SETTER   
@@ -60,6 +61,15 @@ HashMapNode<T>::HashMapNode (std::string keyInit, T val)
 {
 	key = keyInit;
 	value = val;
+}
+
+
+template <class T>
+HashMapNode<T>::HashMapNode(std::string keyInit, T val, unsigned int id)
+{
+	key = keyInit;
+	value = val;
+	hashId = id;
 }
 
 template <class T>

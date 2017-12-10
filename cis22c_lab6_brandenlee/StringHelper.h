@@ -1,8 +1,8 @@
 /*
-Branden Lee, Anh Truong, Alexander Morfin, and Michael Wu
+Branden Lee
 CIS 22C
 Fall 2017
-Final Project
+Lab 6
 
 Used Microsoft Visual Studio 2017
 Windows SDK Version: 10.0.16299.0
@@ -52,7 +52,24 @@ public:
 	static void replaceAll(std::string& str, const std::string& from, const std::string& to);
 
 	static std::string toLower(std::string str);
+
+	/** creates a hash table index from a string
+	uses prime number multiplication
+	@param str the hash key
+	@param size the size of the hash table
+	@return the index less than size
+	*/
 	static unsigned int hashStr(std::string str, unsigned int size);
+	/** creates a hash table index from a birthday
+	So, today's date of 2017-12-04 will reduce as 2+0+1+7+1+2+0+4 = 17
+	which will further reduce as 1+7 = 8
+	@param str the birthday in form YYYY-MM-DD
+	@param size the size of the hash table
+	@return the index less than size
+	*/
+	static unsigned int hashBirthday(std::string str, unsigned int size);
+	static unsigned int hashBirthday(std::string str);
+
 	static std::string center(std::string str, unsigned int size);
 	static std::string repeatToLength(std::string s, unsigned len);
 	static bool isNumeric(std::string str);

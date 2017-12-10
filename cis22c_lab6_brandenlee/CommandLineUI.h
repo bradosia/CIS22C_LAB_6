@@ -1,11 +1,12 @@
 /*
-Branden Lee and Alex Morfin
+Branden Lee
 CIS 22C
 Fall 2017
-Lab 5
+Lab 6
 
 Used Microsoft Visual Studio 2017
 Windows SDK Version: 10.0.16299.0
+Use SDK Version: 10.0.15063.0 for De Anza Computers
 USE DOXYGEN COMPLIANT DOCUMENTATION
 */
 #ifndef COMMAND_LINE_UI_H
@@ -17,7 +18,7 @@ USE DOXYGEN COMPLIANT DOCUMENTATION
 #include "FileIO.h"
 #include "List.h"
 #include "NodeMain.h"
-#include "BST.h"
+#include "HashMap.h"
 
 /**
 @class CommandLineUI
@@ -34,24 +35,6 @@ public:
 	@post menu
 	@return None */
 	static void enterLoop ();
-
-	/** visits the data node and returns a string
-	@pre None
-	@post None
-	@return data string */
-	static std::string CommandLineUI::visit (NodeMain* nodePtr);
-
-	/** visits the data node and returns the name
-	@pre None
-	@post None
-	@return name string in form FIRST LAST */
-	static std::string CommandLineUI::nameAccess (NodeMain* nodePtr);
-
-	/** visits the data node and returns the birthday
-	@pre None
-	@post None
-	@return birthday string in form YYYY-MM-DD */
-	static std::string CommandLineUI::birthdayAccess (NodeMain* nodePtr);
 };
 
 #endif

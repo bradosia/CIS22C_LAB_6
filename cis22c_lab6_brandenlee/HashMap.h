@@ -1,8 +1,8 @@
 /*
-Branden Lee, Anh Truong, Alexander Morfin, and Michael Wu
+Branden Lee
 CIS 22C
 Fall 2017
-Final Project
+Lab 6
 
 Used Microsoft Visual Studio 2017
 Windows SDK Version: 10.0.16299.0
@@ -19,6 +19,7 @@ USE DOXYGEN COMPLIANT DOCUMENTATION
 #include "StringHelper.h"
 #include "List.h"
 #include "HashMapNode.h"
+#include "HashMapIterator.h"
 
 /**
 @class HashMap
@@ -32,7 +33,7 @@ template <class T>
 class HashMap
 {
 private:
-	List<HashMapNode<T>*>** map;
+	HashMapNode<T>** map;
 	List<HashMapNode<T>*>* mapNodes;
 	unsigned int itemCount;
 	unsigned int bucketCount;
@@ -43,30 +44,8 @@ public:
 	HashMap(unsigned int size);
 	~HashMap();
 
-	class iterator
-	{
-	private:
-		List<HashMapNode<T>*>* mapNodes;
-		int position;
-		unsigned int operations;
-	public:
-		iterator() {
-			mapNodes = nullptr;
-			position = 0;
-		}
-		iterator(List<HashMapNode<T>*>* ptr, int pos) {
-			mapNodes = ptr;
-			position = pos;
-		}
-		iterator operator++() { iterator i = *this; position++; return i; }
-		iterator operator++(int junk) { position++; return *this; }
-		HashMapNode<T>& operator*() { return *((*mapNodes)[position]); }
-		HashMapNode<T>* operator->() { return (*mapNodes)[position]; }
-		bool operator==(const iterator& rhs) { return position == rhs.position; }
-		bool operator!=(const iterator& rhs) { return position != rhs.position; }
-	};
-
-	//typedef HashMapNode<T>* iterator;
+	//class iterator : public HashMapIterator<T>;
+	typedef HashMapIterator<T> iterator;
 	//typedef const HashMapNode<T>* const_iterator;
 
 	/** Returns a reference to the mapped value
@@ -144,7 +123,7 @@ public:
 template <class T>
 HashMap<T>::HashMap(unsigned int size) // Default Constructor
 {
-	map = new List<HashMapNode<T>*>*[size];
+	map = new HashMapNode<T>*[size];
 	mapNodes = new List<HashMapNode<T>*>;
 	itemCount = 0;
 	bucketCount = 0;
@@ -230,40 +209,22 @@ template <class T>
 bool HashMap<T>::insert(std::string key, T val, unsigned int &operations)
 {
 	operations += 10;
-	/* this method will overwrite an existing key
-	check if a key exists with the find method */
 	bool flag = false;
-	unsigned int n, i;
-	n = 0;
-	unsigned int hashId = (unsigned int)StringHelper::hashStr(key, maxCount);
-	// init a new bucket if necessary
-	if (map[hashId] == nullptr)
-	{
-		map[hashId] = new List<HashMapNode<T>*>;
-		bucketCount++;
-	}
-	else
-	{
-		n = map[hashId]->size();
-	}
-	// collision occurs
-	if (n != 0)
-	{
-		collisionCount++;
-		/* check if a node with the same key exists in the
-		linked list and remove it */
-		for (i = 0; i < n; i++)
+	unsigned int i, j, k, hashId;
+	k = (unsigned int)StringHelper::hashBirthday(key);
+	hashId = k % maxCount;
+	// compute new index until we find next available space.
+	for (j = 0; j < maxCount; j++) {
+		hashId = (k + j * j) % maxCount;
+		// if not occupied, then add new node
+		if (map[hashId] == nullptr)
 		{
-			operations++;
-			if ((*map[hashId])[i]->getKey() == key)
-			{
-				replacementCount++;
-				map[hashId]->erase(i);
-			}
+			map[hashId] = new HashMapNode<T>(key, val, hashId);
+			flag = true;
+			itemCount++;
+			break;
 		}
 	}
-	itemCount++;
-	flag = map[hashId]->push_back(new HashMapNode<T>(key, val, hashId, n));
 	return flag;
 }
 

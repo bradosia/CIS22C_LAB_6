@@ -1,8 +1,8 @@
 /*
-Branden Lee, Anh Truong, Alexander Morfin, and Michael Wu
+Branden Lee
 CIS 22C
 Fall 2017
-Final Project
+Lab 6
 
 Used Microsoft Visual Studio 2017
 Windows SDK Version: 10.0.16299.0
@@ -107,6 +107,35 @@ unsigned int StringHelper::hashStr(std::string str, unsigned int size)
 		s++;
 	}
 	return h % size;
+}
+
+unsigned int StringHelper::hashBirthday(std::string str, unsigned int size)
+{
+	return hashBirthday(str) % size;
+}
+
+unsigned int StringHelper::hashBirthday(std::string str)
+{
+	unsigned int i, n, sum, cur;
+	// split the birthday YYYY-MM-DD
+	List<std::string>* listPtr = split(str, "-");
+	// add up Y+Y+Y+Y+M+M+D+D
+	sum = 0;
+	n = listPtr->size();
+	for (i = 0; i < n; i++) {
+		/* ignore non-numeric birthday parts
+		this probably indicates some input error */
+		try { cur = stoi((*listPtr)[i]); }
+		catch (const std::exception& e) { e.what(); cur = 0; }
+		for (; cur != 0; cur /= 10)
+			sum += cur % 10;
+	}
+	// now add up index digits M+M
+	cur = sum;
+	sum = 0;
+	for (; cur != 0; cur /= 10)
+		sum += cur % 10;
+	return sum;
 }
 
 std::string StringHelper::center(std::string str, unsigned int size)
