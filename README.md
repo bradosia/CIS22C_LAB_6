@@ -17,7 +17,7 @@ Write a program to do the following:
 7. I will test your program with my own version of the data file which may exist in any folder on my machine.
 
 To submit:
-- Name all the necessary artifacts - projects, cpp file, zipfile, screenshots - as cis22c_lab6_<yourname>.<file extension>. Remember you need to replace text between < > appropriately.
+- Name all the necessary artifacts - projects, cpp file, zipfile, screenshots - as cis22c_lab6_\<yourname\>.\<file extension\>. Remember you need to replace text between < > appropriately.
 - Upload only one zip file that contains everything including the full Visual Studio project files and exe.
 - Remember to complete this lab SOLO.
 - Also, remember to mention the lab whose score you wish to replace in the comment field. If there is no comment, this makeup will not be graded.
