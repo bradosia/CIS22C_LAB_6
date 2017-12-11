@@ -1,16 +1,28 @@
+De Anza College<BR>
+Manish Goel<BR>
+Fall 2017<BR>
+CIS22C Data Abstract & Structures<BR>
+
 # Instructions
-Programming Problem 5 on page 491 of the book (screenshot below) :
+This is a makeup lab - it will allow you to replace points of any one lab where you got a low score. Since not everyone, e.g. both partners in a HW team, will need the makeup lab, this one should be done and uploaded individually. In the comment block of the submission - clearly mention which lab's grade you want replaced. No comment, no grade.
 
-- Just names (format: fname lname) and birthdays (format: yyyy-mm-dd) as data attributes are sufficient.
-- Implement your BST as a link-based ADT - you may be able to reuse your Node classes from Labs 2 and 2b.
-- For the data, create a text file of data in a random fashion - name or birthday entry per line.
-- Read the data to create your BST for the database by name or birthday as needed - remember two different trees will be needed and the node insertions will be different depending on which data tree it is.
-- Write out the listing of everyone by name to a file (separate from your input) using a post-order traversal mechanism.
-- Write out the listing of everyone by birthday to a different file using a breadth-first traversal mechanism.
-- Include your code source tree, input text file and the two output files in your zip upload. Only one file upload is allowed.
-- Ensure I can run the programs by changing the data in your files without having to fix your code for file locations.
+Write a program to do the following:
 
-Any other questions or clarifications - ask on the forum first.
+1. Use the sample data file I provided for verifying the results of your BST homework (Lab 5) to enter data into a hash table.
+2. Your hash table should have 10 entries
+3. The birthday should be used as the hash key by adding the digits repeatedly until it ends up being a number between 0 and 9, which will be the index of the data in the hash table. So, today's date of 2017-12-04 will reduce as 2+0+1+7+1+2+0+4 = 17 which will further reduce as 1+7 = 8 and its associated data record (name + birthday) will be added to index 8 in the hash table.
+4. For collision resolution, use quadratic probing.
+5. Your main will first load the data file into the hash table and print the number of data items loaded, load factor and number of collisions. 
+6. Then it will ask the user in a loop to enter a birthdate - any date. If the birthdate is found in the hash table, it will print the name associated with that date, otherwise it will print 'Invalid Data'. Then it will ask the user if they want to check again or end the program.
+7. I will test your program with my own version of the data file which may exist in any folder on my machine.
+
+To submit:
+- Name all the necessary artifacts - projects, cpp file, zipfile, screenshots - as cis22c_lab6_<yourname>.<file extension>. Remember you need to replace text between < > appropriately.
+- Upload only one zip file that contains everything including the full Visual Studio project files and exe.
+- Remember to complete this lab SOLO.
+- Also, remember to mention the lab whose score you wish to replace in the comment field. If there is no comment, this makeup will not be graded.
+- There is only one submission deadline - before you come for the final.
+- Since this is a makeup, this lab will be graded more strictly than usual.
 
 # Outcome
 NOT GRADED
