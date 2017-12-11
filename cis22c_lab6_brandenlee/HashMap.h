@@ -40,6 +40,7 @@ private:
 	unsigned int maxCount;
 	unsigned int collisionCount;
 	unsigned int replacementCount;
+	unsigned int insertAttempt;
 public:
 	HashMap(unsigned int size);
 	~HashMap();
@@ -66,6 +67,7 @@ public:
 	unsigned int max_size() const;
 	unsigned int bucketsUsed() const;
 	unsigned int collisions() const;
+	unsigned int insertAttempts() const;
 
 	/** Removes all elements from the container.
 	*/
@@ -83,7 +85,7 @@ public:
 	bool insert(std::string key, T val, unsigned int &operations);
 
 	bool erase(std::string key, unsigned int &operations);
-	bool erase(List<HashMapNode<T>*>* &bucketPtr, unsigned int pos, unsigned int &operations);
+	bool erase(unsigned int hashId, unsigned int &operations);
 	bool remove(T val, unsigned int &operations);
 
 	/** Finds an element with key equivalent to key
@@ -92,8 +94,9 @@ public:
 	-1 if bucket not initialized or key not found
 	*/
 	int find(std::string key, unsigned int &operations);
+	int search(T val, unsigned int &operations);
 
-	List<HashMapNode<T>*>* getHash(int hashId);
+	HashMapNode<T>* getHash(int hashId);
 	bool existHash(int hashId);
 	/** turns the linked list array into a linear
 	linked list. this allows the hash table to be
@@ -143,21 +146,11 @@ HashMap<T>::~HashMap() { clear(); } // Destructor
 template <class T>
 T HashMap<T>::at(std::string key)
 {
-	unsigned int i, n;
-	if (map[StringHelper::hashStr(key, maxCount)] == nullptr)
-	{
-		throw std::runtime_error("Key " + key + " does not exist!");
-	}
-	else
-	{
-		n = map[StringHelper::hashStr(key, maxCount)]->size();
-		for (i = 0; i < n; i++)
-		{
-			if ((*map[StringHelper::hashStr(key, maxCount)])[i]->getKey() == key)
-			{
-				return (*map[StringHelper::hashStr(key, maxCount)])[i]->getValue();
-			}
-		}
+	unsigned int operations;
+	bool flag = false;
+	int hashId = find(key, operations);
+	if (hashId > -1) {
+		return map[hashId]->getValue();
 	}
 	throw std::runtime_error("Key " + key + " does not exist!");
 }
@@ -193,35 +186,50 @@ unsigned int HashMap<T>::collisions() const
 	return collisionCount;
 }
 
+
+template <class T>
+unsigned int HashMap<T>::insertAttempts() const
+{
+	return insertAttempt;
+}
+
 template <class T>
 void HashMap<T>::clear()
 {
-	unsigned int i;
+	unsigned int i, operations;
 	for (i = 0; i < maxCount; i++)
 	{
-		if (map[i])
-			delete map[i];
+		erase(i, operations);
 	}
 	itemCount = 0;
+	bucketCount = 0;
 }
 
 template <class T>
 bool HashMap<T>::insert(std::string key, T val, unsigned int &operations)
 {
-	operations += 10;
+	operations += 2;
+	insertAttempt++;
 	bool flag = false;
-	unsigned int i, j, k, hashId;
-	k = (unsigned int)StringHelper::hashBirthday(key);
-	hashId = k % maxCount;
+	unsigned int j, k, hashId, InitId;
+	k = StringHelper::hashBirthday(key);
+	hashId = InitId = k % maxCount;
 	// compute new index until we find next available space.
 	for (j = 0; j < maxCount; j++) {
+		operations++;
 		hashId = (k + j * j) % maxCount;
 		// if not occupied, then add new node
 		if (map[hashId] == nullptr)
 		{
+			operations += 5;
+			if (j > 0) {
+				collisionCount++;
+			}
 			map[hashId] = new HashMapNode<T>(key, val, hashId);
+			map[hashId]->setInitialId(InitId);
 			flag = true;
 			itemCount++;
+			bucketCount++;
 			break;
 		}
 	}
@@ -232,53 +240,29 @@ template <class T>
 bool HashMap<T>::erase(std::string key, unsigned int &operations)
 {
 	bool flag = false;
-	unsigned int i, n, hashId;
-	hashId = (unsigned int)StringHelper::hashStr(key, maxCount);
-	if (map[hashId] == nullptr)
-	{
-		throw std::runtime_error("Key " + key + " does not exist!");
+	int hashId = find(key, operations);
+	if (hashId > -1) {
+		flag = erase(hashId, operations);
 	}
-	else
-	{
-		n = map[hashId]->size();
-		for (i = 0; i < n; i++)
-		{
-			// erases all list nodes matching the key
-			if ((*map[hashId])[i]->getKey() == key)
-			{
-				flag = erase(map[hashId], i, operations);
-				n--;
-			}
-		}
-		if (flag)
-			return flag;
-		else
-			throw std::runtime_error("Key " + key + " does not exist!");
-	}
+	return flag;
 }
 
 template <class T>
-bool HashMap<T>::erase(List<HashMapNode<T>*>* &bucketPtr, unsigned int pos, unsigned int &operations) {
+bool HashMap<T>::erase(unsigned int hashId, unsigned int &operations) {
 	bool flag = false;
-	HashMapNode<T>* hashMapNodePtr;
-	if (bucketPtr && pos < (unsigned int)bucketPtr->size()) {
-		hashMapNodePtr = (*bucketPtr)[pos];
+	if (mapNodes[hashId]) {
 		// linearize clear
 		mapNodes->clear();
 		// collisions reduced
-		if ((*bucketPtr)[pos]->isCollision()) {
+		if (mapNodes[hashId]->isCollision()) {
 			collisionCount--;
 		}
-		// remove hash node from bucket
-		bucketPtr->erase(pos);
+		// delete bucket
+		delete mapNodes[hashId]->getValue();
+		delete mapNodes[hashId];
+		mapNodes[hashId] = nullptr;
+		bucketCount--;
 		itemCount--;
-		// delete bucket if empty
-		if (bucketPtr->empty()) {
-			delete bucketPtr;
-			bucketPtr = nullptr;
-			bucketCount--;
-		}
-		delete hashMapNodePtr;
 		flag = true;
 	}
 	return flag;
@@ -288,24 +272,9 @@ template <class T>
 bool HashMap<T>::remove(T val, unsigned int &operations)
 {
 	bool flag = false;
-	unsigned int i, j, n;
-	/* We don't know the key so we have to check every single map node
-	to see if any list node value matches */
-	for (i = 0; i < maxCount; i++)
-	{
-		if (map[i] != nullptr)
-		{
-			n = map[i]->size();
-			for (j = 0; j < n; j++)
-			{
-				// erases all list nodes matching the value
-				if ((*map[i])[j]->getValue() == val)
-				{
-					flag = erase(map[i], j, operations);
-					n--;
-				}
-			}
-		}
+	int hashId = search(val, operations);
+	if (hashId > -1) {
+		flag = erase(hashId, operations);
 	}
 	return flag;
 }
@@ -315,39 +284,47 @@ int HashMap<T>::find(std::string key, unsigned int &operations)
 {
 	/* this method will overwrite an existing key
 	check if a key exists with the find method */
-	bool flag = false;
-	unsigned int n, i;
-	n = 0;
+	unsigned int j, k, hashId;
 	int pos = -1;
-	int hashId = StringHelper::hashStr(key, maxCount);
-	if (map[hashId] == nullptr)
-	{
-		pos = -1;
-	}
-	else
-	{
-		n = map[hashId]->size();
-	}
-	operations += 6;
-	if (n != 0)
-	{
-		/* check the first node with the same key exists in the
-		linked list and return the position */
-		for (i = 0; i < n; i++)
+	k = StringHelper::hashBirthday(key);
+	for (j = 0; j < maxCount; j++) {
+		operations++;
+		hashId = (k + j * j) % maxCount;
+		// not null and key matches
+		if (map[hashId] != nullptr && map[hashId]->getKey() == key)
 		{
-			operations++;
-			if ((*map[hashId])[i]->getKey() == key)
-			{
-				pos = i;
-				break;
-			}
+			operations += 5;
+			pos = hashId;
+			break;
 		}
 	}
 	return pos;
 }
 
 template <class T>
-List<HashMapNode<T>*>* HashMap<T>::getHash(int hashId)
+int HashMap<T>::search(T val, unsigned int &operations)
+{
+	/* this method will overwrite an existing key
+	check if a key exists with the find method */
+	unsigned int j, k, hashId;
+	int pos = -1;
+	k = StringHelper::hashBirthday(key);
+	for (j = 0; j < maxCount; j++) {
+		operations++;
+		hashId = (k + j * j) % maxCount;
+		// not null and key matches
+		if (map[hashId] != nullptr && map[hashId]->getValue() == val)
+		{
+			operations += 5;
+			pos = hashId;
+			break;
+		}
+	}
+	return pos;
+}
+
+template <class T>
+HashMapNode<T>* HashMap<T>::getHash(int hashId)
 {
 	return map[hashId];
 }
@@ -360,10 +337,7 @@ bool HashMap<T>::existHash(int hashId)
 
 template <class T>
 void HashMap<T>::linearize(unsigned int &operations) {
-	List<HashMapNode<T>*>* movieHashMapListPtr;
-	HashMapNode<T>* movieHashMapNodePtr;
-	unsigned int i, n, j, n1;
-
+	unsigned int i, n;
 	n = max_size();
 	mapNodes->clear();
 	operations += 2;
@@ -375,16 +349,7 @@ void HashMap<T>::linearize(unsigned int &operations) {
 		if (existHash(i))
 		{
 			operations++;
-			movieHashMapListPtr = getHash(i);
-			// loop through every linked-list in the bucket
-			n1 = movieHashMapListPtr->size();
-			for (j = 0; j < n1; j++)
-			{
-				operations += 2;
-				// get the hash table nodes from the list
-				movieHashMapNodePtr = (*movieHashMapListPtr)[j];
-				mapNodes->push_back(movieHashMapNodePtr);
-			}
+			mapNodes->push_back(getHash(i));
 		}
 	}
 }

@@ -13,6 +13,7 @@ USE DOXYGEN COMPLIANT DOCUMENTATION
 #define COMMAND_LINE_UI_H
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <limits>
 #include "FileIO.h"
@@ -35,6 +36,15 @@ public:
 	@post menu
 	@return None */
 	static void enterLoop ();
+
+	/** display the hash table and stats */
+	static void displayHashTable(HashMap <NodeMain*> *storageMapPtr);
+
+	/** it will ask the user in a loop to enter a birthdate - any date. 
+	If the birthdate is found in the hash table, 
+	it will print the name associated with that date, 
+	otherwise it will print 'Invalid Data'. */
+	static void birthdayFind(HashMap <NodeMain*> *storageMapPtr, std::string inputBirthday);
 };
 
 #endif

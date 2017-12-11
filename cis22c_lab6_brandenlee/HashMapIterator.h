@@ -17,7 +17,7 @@ USE DOXYGEN COMPLIANT DOCUMENTATION
 
 /**
 @class HashMapIterator
-list node for the Hash Map. Keeps track of key and value pairs.
+Used to iterate through a hash table.
 @param T data type
 */
 template <class T>

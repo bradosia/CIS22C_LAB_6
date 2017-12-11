@@ -11,7 +11,7 @@ USE DOXYGEN COMPLIANT DOCUMENTATION
 */
 
 /**
-@mainpage Binary Search Tree Example
+@mainpage Hash table Example
 Prompts user for a file with alternating names and birthdays delimitted by newlines.
 For example:\n\n
 Kimberly Henley\n
@@ -20,11 +20,9 @@ Claudette Leflore\n
 1959-07-12\n
 Richard Boyd\n
 1987-07-10\n\n
-Uses a two different binary search trees for names and birthdays. 
-After constructing the BST, the user is promted for the output file
-for 
-- listing of everyone by name using a post-order traversal mechanism.
-- listing of everyone by birthday using a breadth-first traversal mechanism.
+Adds the text file entries into a small hash table with max 10 entries. 
+Items loaded, load factor, and collisions are recorded and displayed to the user. 
+User will then be prompted to search for a birthday and be returned matching names.
 */
 #include <iostream>
 #include "commandLineUI.h"
