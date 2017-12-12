@@ -25,4 +25,4 @@ To submit:
 - Since this is a makeup, this lab will be graded more strictly than usual.
 
 # Outcome
-NOT GRADED
+Full Credit
